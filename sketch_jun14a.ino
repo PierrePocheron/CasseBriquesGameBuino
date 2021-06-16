@@ -44,6 +44,8 @@ const int briqueSizeY = 3;
 //  Compteur
 int compteurScore1 = 0;
 int compteurReb1 = 0;
+int compteurBriquesBreak = 0;
+int compteurLifes = 5;
 
 // ======== F U N C ===========
 
@@ -79,17 +81,17 @@ void maj()
   //  Vérification balle rebond bas
   if(ballePositionY > ballePixelBoundY)
   {
-    //  Vérification balle collision barre 2
+    //  Vérification balle collision barre
     if (gb.collide.rectRect(barrePositionX1, barrePositionY1, barreSizeX, barreSizeY,ballePositionX, ballePositionY, balleSize, balleSize))
     {
-      balleSpeedX = -1;
+      balleSpeedY = -1;
       gb.sound.playTick();
     }
     else
     {
-      gb.sound.playOK();
-      compteurScore1++;
+      gb.sound.playCancel();
       delay(1000);
+      compteurLifes--;
       ballePositionX = gb.display.width()/2;
     }
   }
@@ -145,8 +147,10 @@ void maj()
     int briquePositionY = 10;
     if (gb.collide.rectRect(ballePositionX, ballePositionY, balleSize, balleSize, briquePositionX, briquePositionY, briqueSizeX, briqueSizeY)) 
     {
-      balleSpeedX *= -1;
+      gb.sound.playOK();
+      balleSpeedY = 1;
       tableauBriqueLigne[i] = 0; 
+      compteurBriquesBreak++;
     }
   }
 }
@@ -159,11 +163,6 @@ void affichageGraphique()
   //  Affichage de la raquette 1
   gb.display.setColor(BLUE);
   gb.display.fillRect(barrePositionX1, barrePositionY1, barreSizeX, barreSizeY);
-  
-  //  Affichage Score
-  //gb.display.printf("Score balle =  %d", compteurScore1);
-
-
 
   //Affichage Ligne Brique
   for (int i =0; i < briqueNombre; i++)
@@ -178,14 +177,14 @@ void affichageGraphique()
     gb.display.fillRect(briquePositionX, briquePositionY, briqueSizeX, briqueSizeY);
   }
 
+  //  Affichage compteur Briques break
+  gb.display.setColor(WHITE);
+  gb.display.printf("\nScore =  %d ", compteurBriquesBreak);
 
-
-  //  rebond
-  //gb.display.printf("\nReb 1   =  %d ", compteurReb1);
+  //  Affichage compteur Vie
+  gb.display.setColor(PINK);
+  gb.display.printf("\nVie =  %d ", compteurLifes);
 }
-
-
-
 
 
 
@@ -194,16 +193,12 @@ void setup() {
   gb.begin();
 }
 
-
-
 //  Func Loop
 void loop() {
   while (!gb.update());
   gb.display.clear();
 
-  
   maj();
   affichageGraphique();
-  
 
 }
