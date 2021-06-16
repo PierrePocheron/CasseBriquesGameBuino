@@ -93,6 +93,17 @@ void maj()
       delay(1000);
       compteurLifes--;
       ballePositionX = gb.display.width()/2;
+
+//      if (compteurLifes < 0)
+//      {
+//        gb.display.clear();
+//        gb.display.setColor(PINK);
+//        gb.display.printf("\nVie =  %d ", compteurLifes);
+//        gb.display.setColor(RED);
+//        gb.display.printf("\n\nVous n'avez plus de vie");
+//        gb.display.setColor(GREEN);
+//        gb.display.printf("\n\nRecommencer ?");
+//      }
     }
   }
 
@@ -133,22 +144,17 @@ void maj()
          briquesRestanteBool = true;
       }
     }
-    if (briquesRestanteBool == false)
-    {
-      reinitialiser();
-    }
-    
-    if (tableauBriqueLigne[i] == 0)
-    {
-      continue;
-    }
+    if (briquesRestanteBool == false){ reinitialiser(); }
+    if (tableauBriqueLigne[i] == 0){ continue; }
     
     int briquePositionX = i * (briqueSizeX + 2) + 1;
     int briquePositionY = 10;
     if (gb.collide.rectRect(ballePositionX, ballePositionY, balleSize, balleSize, briquePositionX, briquePositionY, briqueSizeX, briqueSizeY)) 
     {
       gb.sound.playOK();
-      balleSpeedY = 1;
+      if (balleSpeedY == -1){ balleSpeedY = 1; }
+      else{ balleSpeedY = -1; }
+      
       tableauBriqueLigne[i] = 0; 
       compteurBriquesBreak++;
     }
@@ -167,11 +173,7 @@ void affichageGraphique()
   //Affichage Ligne Brique
   for (int i =0; i < briqueNombre; i++)
   {
-    if (tableauBriqueLigne[i] == 0)
-    {
-      continue;
-    }
-    
+    if (tableauBriqueLigne[i] == 0){continue;}
     int briquePositionX = i * (briqueSizeX + 2) + 1;
     int briquePositionY = 10;
     gb.display.fillRect(briquePositionX, briquePositionY, briqueSizeX, briqueSizeY);
@@ -187,7 +189,6 @@ void affichageGraphique()
 }
 
 
-
 //  Func Setup
 void setup() {
   gb.begin();
@@ -200,5 +201,4 @@ void loop() {
 
   maj();
   affichageGraphique();
-
 }
